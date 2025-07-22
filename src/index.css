@@ -2,41 +2,75 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* SnowDrop Weather App Design System - Minimal, Modern, Weather-Aware */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Core backgrounds - Clean whites and subtle grays */
+    --background: 210 20% 98%;
+    --foreground: 222 47% 11%;
 
+    /* Card system - Glassmorphism effects */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 222 47% 11%;
 
+    /* Interactive elements */
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Weather blue theme - Ocean-inspired */
+    --primary: 214 84% 56%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 214 84% 70%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Subtle secondary tones */
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted elements */
+    --muted: 210 20% 94%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent - Sunny yellow for highlights */
+    --accent: 48 96% 65%;
+    --accent-foreground: 222 47% 11%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Alert colors */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Borders and inputs */
+    --border: 214 20% 90%;
+    --input: 214 20% 95%;
+    --ring: 214 84% 56%;
 
-    --radius: 0.5rem;
+    /* Air Quality Indicators - Pastel tones */
+    --air-good: 158 64% 70%;        /* Pastel tiffany green */
+    --air-moderate: 45 86% 75%;     /* Pastel yellow */
+    --air-poor: 0 70% 75%;          /* Pastel red */
+
+    /* UV Index Colors */
+    --uv-low: 158 64% 70%;
+    --uv-moderate: 45 86% 75%;
+    --uv-high: 25 95% 65%;
+    --uv-very-high: 0 70% 75%;
+
+    /* Weather gradients */
+    --gradient-sky: linear-gradient(135deg, hsl(214, 84%, 70%) 0%, hsl(202, 84%, 85%) 100%);
+    --gradient-sunset: linear-gradient(135deg, hsl(25, 95%, 75%) 0%, hsl(45, 96%, 80%) 100%);
+    --gradient-night: linear-gradient(135deg, hsl(222, 47%, 25%) 0%, hsl(235, 60%, 15%) 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+
+    /* Shadows for depth */
+    --shadow-soft: 0 2px 20px hsl(214, 20%, 80%);
+    --shadow-medium: 0 4px 30px hsl(214, 30%, 70%);
+    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.3);
+
+    /* Animation timing */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --radius: 1rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -56,33 +90,41 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Dark mode - Night sky theme */
+    --background: 235 60% 8%;
+    --foreground: 0 0% 95%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 235 60% 12%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 235 60% 12%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 214 84% 65%;
+    --primary-foreground: 235 60% 8%;
+    --primary-glow: 214 84% 75%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 235 40% 18%;
+    --secondary-foreground: 0 0% 90%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 235 40% 15%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 48 96% 70%;
+    --accent-foreground: 235 60% 8%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 65%;
+    --destructive-foreground: 0 0% 95%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 235 30% 20%;
+    --input: 235 30% 18%;
+    --ring: 214 84% 65%;
+
+    /* Dark mode gradients */
+    --gradient-sky: linear-gradient(135deg, hsl(235, 60%, 20%) 0%, hsl(214, 84%, 25%) 100%);
+    --gradient-sunset: linear-gradient(135deg, hsl(25, 95%, 25%) 0%, hsl(45, 96%, 30%) 100%);
+    --gradient-night: linear-gradient(135deg, hsl(235, 60%, 15%) 0%, hsl(222, 47%, 8%) 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -100,6 +142,20 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    transition: var(--transition-smooth);
+  }
+
+  /* Glassmorphism utility classes */
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-md border border-white/20;
+  }
+
+  .weather-gradient {
+    background: var(--gradient-sky);
+  }
+
+  .weather-glow {
+    box-shadow: var(--shadow-glow);
   }
 }
