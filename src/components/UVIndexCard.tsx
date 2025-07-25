@@ -49,7 +49,7 @@ export function UVIndexCard({ uvIndex, peak }: UVIndexCardProps) {
           <Sun className="w-5 h-5 text-muted-foreground" />
           <h3 className="font-semibold text-card-foreground">UV Index</h3>
         </div>
-        <Badge variant="secondary" className={`${status.bgColor} border-0`}>
+        <Badge variant="secondary" className={`${status.bgColor} border-0 cursor-default`}>
           <StatusIcon className={`w-3 h-3 mr-1 text-${status.color}`} />
           <span className={`text-${status.color} font-medium`}>{status.level}</span>
         </Badge>

@@ -46,7 +46,7 @@ export function NotificationBanner({ type, message, action }: NotificationBanner
   const Icon = config.icon;
 
   return (
-    <Alert className={`${config.bgColor} ${config.borderColor} border animate-slide-up`}>
+    <Alert className={`${config.bgColor} ${config.borderColor} border animate-slide-up cursor-default`}>
       <div className="flex items-start gap-3">
         <Icon className={`w-5 h-5 ${config.iconColor} mt-0.5`} />
         <div className="flex-1">
