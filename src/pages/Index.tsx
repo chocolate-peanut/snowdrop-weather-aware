@@ -27,6 +27,22 @@ const Index = () => {
     { time: "5PM", temperature: 20, condition: "cloudy" as const, precipitation: 30 },
     { time: "6PM", temperature: 19, condition: "cloudy" as const, precipitation: 0 },
     { time: "7PM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
+    { time: "8PM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
+    { time: "9PM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
+    { time: "10PM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
+    { time: "11PM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
+    { time: "12AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
+    { time: "1AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
+    { time: "2AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
+    { time: "3AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
+    { time: "4AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
+    { time: "5AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
+    { time: "6AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
+    { time: "7AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
+    { time: "8AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
+    { time: "9AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
+    { time: "10AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
+    { time: "11AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
   ];
 
   const mockWeeklyData = [
