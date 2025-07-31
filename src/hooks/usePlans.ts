@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Plan } from '@/types/plan';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { useToast } from '@/components/ui/use-toast';
 
 export const usePlans = () => {
@@ -15,6 +15,14 @@ export const usePlans = () => {
   const fetchPlans = async () => {
     try {
       setLoading(true);
+      
+      // If Supabase is not configured, use localStorage only
+      if (!isSupabaseConfigured() || !supabase) {
+        await migrateFromLocalStorage();
+        setLoading(false);
+        return;
+      }
+      
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -72,6 +80,20 @@ export const usePlans = () => {
 
   const addPlan = async (plan: Omit<Plan, 'id'>) => {
     try {
+      // If Supabase is not configured, use localStorage only
+      if (!isSupabaseConfigured() || !supabase) {
+        const newPlan: Plan = {
+          ...plan,
+          id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+        };
+        setPlans(prev => [...prev, newPlan]);
+        
+        const STORAGE_KEY = 'snowdrop-plans';
+        const currentPlans = [...plans, newPlan];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(currentPlans));
+        return;
+      }
+      
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -137,6 +159,18 @@ export const usePlans = () => {
 
   const updatePlan = async (id: string, updatedPlan: Partial<Plan>) => {
     try {
+      // If Supabase is not configured, use localStorage only
+      if (!isSupabaseConfigured() || !supabase) {
+        const updatedPlans = plans.map(plan => 
+          plan.id === id ? { ...plan, ...updatedPlan } : plan
+        );
+        setPlans(updatedPlans);
+        
+        const STORAGE_KEY = 'snowdrop-plans';
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPlans));
+        return;
+      }
+      
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -196,6 +230,16 @@ export const usePlans = () => {
 
   const deletePlan = async (id: string) => {
     try {
+      // If Supabase is not configured, use localStorage only
+      if (!isSupabaseConfigured() || !supabase) {
+        const updatedPlans = plans.filter(plan => plan.id !== id);
+        setPlans(updatedPlans);
+        
+        const STORAGE_KEY = 'snowdrop-plans';
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPlans));
+        return;
+      }
+      
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { UserSettings } from '@/types/plan';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { useToast } from '@/components/ui/use-toast';
 
 const defaultSettings: UserSettings = {
@@ -26,6 +26,14 @@ export const useSettings = () => {
   const fetchSettings = async () => {
     try {
       setLoading(true);
+      
+      // If Supabase is not configured, use localStorage only
+      if (!isSupabaseConfigured() || !supabase) {
+        await migrateFromLocalStorage();
+        setLoading(false);
+        return;
+      }
+      
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -104,6 +112,13 @@ export const useSettings = () => {
     try {
       const updatedSettings = { ...settings, ...newSettings };
       setSettings(updatedSettings);
+
+      // If Supabase is not configured, use localStorage only
+      if (!isSupabaseConfigured() || !supabase) {
+        const SETTINGS_KEY = 'snowdrop-settings';
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(updatedSettings));
+        return;
+      }
 
       const { data: { user } } = await supabase.auth.getUser();
       
