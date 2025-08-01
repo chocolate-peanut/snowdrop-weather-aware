@@ -1,4 +1,11 @@
-# Welcome to your Lovable project
+# Welcome to My First Ever Side Project with the Help of Lovable
+
+The reason I use AI for creating this application:
+- I want to focus on design and solutions instead of just coding like a nerd.
+- Learn from UI/UX to case study, and then to the implementation.
+- For fun, as I just want to express my ideas.
+
+
 
 ## Project info
 
