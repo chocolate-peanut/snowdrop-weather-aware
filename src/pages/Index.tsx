@@ -6,54 +6,44 @@ import { HourlyForecast } from "@/components/HourlyForecast";
 import { WeeklyForecast } from "@/components/WeeklyForecast";
 import { NotificationBanner } from "@/components/NotificationBanner";
 import { Layout } from "@/components/Layout";
+import { useWeather } from "@/hooks/useWeather";
 import { Button } from "@/components/ui/button";
 import { MapPin } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [location, setLocation] = useState("New York");
   const [searchLocation, setSearchLocation] = useState("");
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeTab, setActiveTab] = useState("home");
+  
+  const { toast } = useToast();
+  const { 
+    weatherData, 
+    loading, 
+    error, 
+    fetchWeatherByLocation, 
+    fetchCurrentLocationWeather,
+    clearError 
+  } = useWeather();
 
-  // Sample data - in a real app, this would come from weather APIs
-  const mockHourlyData = [
-    { time: "Now", temperature: 22, condition: "sunny" as const, precipitation: 0 },
-    { time: "1PM", temperature: 24, condition: "sunny" as const, precipitation: 0 },
-    { time: "2PM", temperature: 25, condition: "cloudy" as const, precipitation: 10 },
-    { time: "3PM", temperature: 23, condition: "rainy" as const, precipitation: 80 },
-    { time: "4PM", temperature: 21, condition: "rainy" as const, precipitation: 90 },
-    { time: "5PM", temperature: 20, condition: "cloudy" as const, precipitation: 30 },
-    { time: "6PM", temperature: 19, condition: "cloudy" as const, precipitation: 0 },
-    { time: "7PM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
-    { time: "8PM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
-    { time: "9PM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
-    { time: "10PM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
-    { time: "11PM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
-    { time: "12AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
-    { time: "1AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
-    { time: "2AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
-    { time: "3AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
-    { time: "4AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
-    { time: "5AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
-    { time: "6AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
-    { time: "7AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
-    { time: "8AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
-    { time: "9AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
-    { time: "10AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
-    { time: "11AM", temperature: 18, condition: "sunny" as const, precipitation: 0 },
-  ];
+  // Load weather for default location on mount
+  useEffect(() => {
+    fetchWeatherByLocation("New York");
+  }, []);
 
-  const mockWeeklyData = [
-    { day: "Today", condition: "sunny" as const, high: 25, low: 18, precipitation: 0 },
-    { day: "Mon", condition: "rainy" as const, high: 22, low: 16, precipitation: 85 },
-    { day: "Tue", condition: "cloudy" as const, high: 20, low: 14, precipitation: 20 },
-    { day: "Wed", condition: "sunny" as const, high: 24, low: 17, precipitation: 0 },
-    { day: "Thu", condition: "sunny" as const, high: 26, low: 19, precipitation: 0 },
-    { day: "Fri", condition: "cloudy" as const, high: 23, low: 16, precipitation: 15 },
-    { day: "Sat", condition: "rainy" as const, high: 19, low: 13, precipitation: 70 },
-  ];
+  // Show error messages as toasts
+  useEffect(() => {
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Weather Error",
+        description: error,
+      });
+      clearError();
+    }
+  }, [error, toast, clearError]);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
@@ -95,29 +85,31 @@ const Index = () => {
   };
 
   const handleLocationSelect = (selectedLocation: string) => {
-    setLocation(selectedLocation.split(',')[0]);
+    const locationName = selectedLocation.split(',')[0];
+    fetchWeatherByLocation(locationName);
     setSearchLocation("");
     setShowSuggestions(false);
   };
 
-  const handleCurrentLocationClick = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          // Mock reverse geocoding - in real app, use Google Geocoding API
-          setLocation("Current Location");
-          console.log("Location detected:", latitude, longitude);
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-          alert("Please enable location services to use this feature");
-        }
-      );
-    } else {
-      alert("Geolocation is not supported by this browser");
+  const handleCurrentLocationClick = async () => {
+    try {
+      await fetchCurrentLocationWeather();
+      toast({
+        title: "Location Updated",
+        description: "Weather data updated for your current location",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Location Error",
+        description: "Failed to get current location. Please enable location services.",
+      });
     }
   };
+
+  // Use weather data if available, otherwise show loading or fallback
+  const currentWeather = weatherData?.current;
+  const location = currentWeather?.location || "Loading...";
 
   return (
     <Layout
@@ -134,53 +126,82 @@ const Index = () => {
       currentTime={currentTime}
     >
       <div className="container mx-auto px-4 py-6 space-y-6">
-        {/* Smart Notifications */}
-        <div className="space-y-3">
-          <NotificationBanner 
-            type="rain" 
-            message="Rain expected in 2 hours. Don't forget your umbrella!" 
-            action="Set reminder"
-          />
-          <NotificationBanner 
-            type="uv" 
-            message="High UV index today. Consider wearing sunscreen and a hat."
-            action="View details"
-          />
-        </div>
+        {/* Loading state */}
+        {loading && (
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p className="text-muted-foreground mt-2">Loading weather data...</p>
+          </div>
+        )}
 
-        {/* Main Weather Card */}
-        <WeatherCard
-          location={location}
-          temperature={22}
-          condition="sunny"
-          date={formatDate(currentTime)}
-          description="Clear skies with gentle breeze"
-        />
+        {/* Weather content */}
+        {!loading && weatherData && (
+          <>
+            {/* Smart Notifications */}
+            <div className="space-y-3">
+              {weatherData.alerts.map((alert, index) => (
+                <NotificationBanner 
+                  key={index}
+                  type="general" 
+                  message={alert.headline}
+                />
+              ))}
+              {weatherData.hourly.some(h => h.precipitation > 50) && (
+                <NotificationBanner 
+                  type="rain" 
+                  message="Rain expected in the next few hours. Don't forget your umbrella!" 
+                />
+              )}
+              {weatherData.uvIndex.current > 6 && (
+                <NotificationBanner 
+                  type="uv" 
+                  message="High UV index today. Consider wearing sunscreen and a hat."
+                />
+              )}
+              {weatherData.airQuality.aqi > 100 && (
+                <NotificationBanner 
+                  type="air" 
+                  message="Air quality is unhealthy. Consider limiting outdoor activities."
+                />
+              )}
+            </div>
 
-        {/* Air Quality and UV Index */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <AirQualityCard
-            aqi={42}
-            location={location}
-            pm25={12}
-            pm10={18}
-          />
-          <UVIndexCard
-            uvIndex={6}
-            peak="12:00 - 14:00"
-          />
-        </div>
+            {/* Main Weather Card */}
+            <WeatherCard
+              location={currentWeather.location}
+              temperature={currentWeather.temperature}
+              condition={currentWeather.condition}
+              date={formatDate(currentTime)}
+              description={currentWeather.description}
+            />
 
-        {/* Hourly Forecast */}
-        <HourlyForecast data={mockHourlyData} />
+            {/* Air Quality and UV Index */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <AirQualityCard
+                aqi={weatherData.airQuality.aqi}
+                location={currentWeather.location}
+                pm25={weatherData.airQuality.pm25}
+                pm10={weatherData.airQuality.pm10}
+              />
+              <UVIndexCard
+                uvIndex={weatherData.uvIndex.current}
+                peak={weatherData.uvIndex.peak}
+              />
+            </div>
 
-        {/* Weekly Forecast */}
-        <WeeklyForecast data={mockWeeklyData} />
+            {/* Hourly Forecast */}
+            <HourlyForecast data={weatherData.hourly} />
+
+            {/* Weekly Forecast */}
+            <WeeklyForecast data={weatherData.weekly} />
+          </>
+        )}
 
         {/* Location Detection Prompt */}
         <div className="text-center py-8">
           <Button 
             onClick={handleCurrentLocationClick}
+            disabled={loading}
             className="glass-card border-0 bg-primary/90 hover:bg-primary text-primary-foreground"
           >
             <MapPin className="w-4 h-4 mr-2" />
