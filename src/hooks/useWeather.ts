@@ -52,10 +52,48 @@ interface WeatherData {
   alerts: WeatherAlert[];
 }
 
+interface LocationSuggestion {
+  id: number;
+  name: string;
+  region: string;
+  country: string;
+  fullName: string;
+  coordinates: {
+    lat: number;
+    lon: number;
+  };
+}
+
 export function useWeather() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [locationSuggestions, setLocationSuggestions] = useState<LocationSuggestion[]>([]);
+
+  const searchLocations = async (query: string): Promise<LocationSuggestion[]> => {
+    if (query.trim().length < 2) {
+      setLocationSuggestions([]);
+      return [];
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke('location-search', {
+        body: { query: query.trim() }
+      });
+
+      if (error) {
+        console.error('Location search error:', error);
+        return [];
+      }
+
+      const suggestions = data.suggestions || [];
+      setLocationSuggestions(suggestions);
+      return suggestions;
+    } catch (err) {
+      console.error('Location search failed:', err);
+      return [];
+    }
+  };
 
   const fetchWeatherByCoordinates = async (latitude: number, longitude: number) => {
     setLoading(true);
@@ -161,6 +199,8 @@ export function useWeather() {
     weatherData,
     loading,
     error,
+    locationSuggestions,
+    searchLocations,
     fetchWeatherByCoordinates,
     fetchWeatherByLocation,
     fetchCurrentLocationWeather,

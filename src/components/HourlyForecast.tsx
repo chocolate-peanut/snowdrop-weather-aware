@@ -20,42 +20,71 @@ const weatherIcons = {
 };
 
 export function HourlyForecast({ data }: HourlyForecastProps) {
-  // Ensure the first item shows current time if available
   const currentTime = new Date();
   const currentHour = currentTime.getHours();
   
-  // Sort data to ensure current hour comes first
-  const sortedData = [...data].sort((a, b) => {
-    const aHour = parseInt(a.time.split(':')[0]);
-    const bHour = parseInt(b.time.split(':')[0]);
+  // Create chronological hourly data starting from current hour
+  const createChronologicalData = () => {
+    const chronologicalData = [];
     
-    // If we find current hour, prioritize it
-    if (aHour === currentHour) return -1;
-    if (bHour === currentHour) return 1;
+    for (let i = 0; i < 24; i++) {
+      const targetHour = (currentHour + i) % 24;
+      const isCurrentHour = i === 0;
+      
+      // Find matching data point or create default
+      const matchingData = data.find(item => {
+        const itemHour = parseInt(item.time.split(':')[0]);
+        const adjustedHour = item.time.includes('PM') && itemHour !== 12 
+          ? itemHour + 12 
+          : item.time.includes('AM') && itemHour === 12 
+          ? 0 
+          : itemHour;
+        return adjustedHour === targetHour;
+      });
+      
+      const displayTime = isCurrentHour 
+        ? 'Now'
+        : targetHour === 0 
+        ? '12 AM'
+        : targetHour === 12 
+        ? '12 PM'
+        : targetHour > 12 
+        ? `${targetHour - 12} PM`
+        : `${targetHour} AM`;
+      
+      chronologicalData.push({
+        time: displayTime,
+        temperature: matchingData?.temperature || 20,
+        condition: matchingData?.condition || 'cloudy',
+        precipitation: matchingData?.precipitation || 0,
+        isCurrentHour
+      });
+    }
     
-    return aHour - bHour;
-  });
+    return chronologicalData;
+  };
+  
+  const chronologicalData = createChronologicalData();
 
   return (
     <Card className="glass-card p-6">
       <h3 className="font-semibold text-card-foreground mb-4">24-Hour Forecast</h3>
-      <ScrollArea className="w-full max-w-full">
-        <div className="flex gap-4 pb-4 min-w-max">
-          {sortedData.map((hour, index) => {
+      <ScrollArea className="w-full">
+        <div className="flex gap-3 pb-4 overflow-x-auto min-w-max">
+          {chronologicalData.map((hour, index) => {
             const WeatherIcon = weatherIcons[hour.condition];
-            const isCurrentHour = index === 0;
             
             return (
               <div 
                 key={index} 
-                className={`flex flex-col items-center min-w-16 p-3 rounded-lg transition-colors ${
-                  isCurrentHour 
+                className={`flex flex-col items-center w-20 flex-shrink-0 p-3 rounded-lg transition-colors ${
+                  hour.isCurrentHour 
                     ? 'bg-primary/20 border border-primary/30' 
                     : 'bg-secondary/50 hover:bg-secondary/70'
                 }`}
               >
-                <span className={`text-xs mb-2 ${isCurrentHour ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
-                  {isCurrentHour ? 'Now' : hour.time}
+                <span className={`text-xs mb-2 whitespace-nowrap ${hour.isCurrentHour ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
+                  {hour.time}
                 </span>
                 <WeatherIcon className="w-5 h-5 text-primary mb-2" />
                 <span className="font-semibold text-sm text-card-foreground mb-1">{hour.temperature}°</span>

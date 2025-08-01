@@ -23,6 +23,8 @@ const Index = () => {
     weatherData, 
     loading, 
     error, 
+    locationSuggestions,
+    searchLocations,
     fetchWeatherByLocation, 
     fetchCurrentLocationWeather,
     clearError 
@@ -68,8 +70,14 @@ const Index = () => {
 
   const handleLocationSearch = async (query: string) => {
     setSearchLocation(query);
-    // Remove mock suggestions - allow direct search
-    setShowSuggestions(false);
+    if (query.trim().length >= 2) {
+      const suggestions = await searchLocations(query);
+      setSearchSuggestions(suggestions.map(s => s.fullName));
+      setShowSuggestions(suggestions.length > 0);
+    } else {
+      setSearchSuggestions([]);
+      setShowSuggestions(false);
+    }
   };
 
   const handleLocationSelect = (selectedLocation: string) => {
@@ -118,8 +126,8 @@ const Index = () => {
       onLocationSearch={handleLocationSearch}
       onLocationSelect={handleLocationSelect}
       onCurrentLocationClick={handleCurrentLocationClick}
-      searchSuggestions={[]}
-      showSuggestions={false}
+      searchSuggestions={searchSuggestions}
+      showSuggestions={showSuggestions}
       setShowSuggestions={setShowSuggestions}
       currentTime={currentTime}
     >

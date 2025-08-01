@@ -106,6 +106,20 @@ export const Layout = ({
                 onKeyPress={(e) => e.key === 'Enter' && onLocationSelect?.(searchLocation || '')}
                 className="pl-10 glass-card border-0"
               />
+              {/* Autocomplete suggestions */}
+              {showSuggestions && searchSuggestions && searchSuggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+                  {searchSuggestions.map((suggestion, index) => (
+                    <button
+                      key={index}
+                      onClick={() => onLocationSelect?.(suggestion)}
+                      className="w-full px-4 py-2 text-left hover:bg-secondary/50 transition-colors first:rounded-t-lg last:rounded-b-lg"
+                    >
+                      <span className="text-sm text-foreground">{suggestion}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
             <Button 
               onClick={() => onLocationSelect?.(searchLocation || '')}
