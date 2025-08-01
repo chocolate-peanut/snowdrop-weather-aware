@@ -96,32 +96,24 @@ export const Layout = ({
       {/* Location Search - Only show on home tab */}
       {shouldShowSearch && location && onLocationSearch && (
         <div className="container mx-auto px-4 pt-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder="Search location..."
-              value={searchLocation}
-              onChange={(e) => onLocationSearch(e.target.value)}
-              onFocus={() => searchLocation && searchLocation.length > 2 && setShowSuggestions?.(true)}
-              onBlur={() => setTimeout(() => setShowSuggestions?.(false), 200)}
-              className="pl-10 glass-card border-0"
-            />
-            {showSuggestions && searchSuggestions && searchSuggestions.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-50">
-                {searchSuggestions.map((suggestion, index) => (
-                  <button
-                    key={index}
-                    className="w-full text-left px-4 py-2 hover:bg-secondary/50 first:rounded-t-lg last:rounded-b-lg"
-                    onClick={() => onLocationSelect?.(suggestion)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-card-foreground">{suggestion}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Enter any location (city, country, etc.)"
+                value={searchLocation}
+                onChange={(e) => onLocationSearch(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && onLocationSelect?.(searchLocation || '')}
+                className="pl-10 glass-card border-0"
+              />
+            </div>
+            <Button 
+              onClick={() => onLocationSelect?.(searchLocation || '')}
+              disabled={!searchLocation?.trim()}
+              className="glass-card border-0"
+            >
+              Search
+            </Button>
           </div>
         </div>
       )}

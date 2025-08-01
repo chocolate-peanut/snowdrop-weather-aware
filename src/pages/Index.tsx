@@ -68,27 +68,25 @@ const Index = () => {
 
   const handleLocationSearch = async (query: string) => {
     setSearchLocation(query);
-    if (query.length > 2) {
-      // Mock search suggestions - in real app, use Google Places API
-      const mockSuggestions = [
-        "New York, NY, USA",
-        "London, UK",
-        "Paris, France",
-        "Tokyo, Japan",
-        "Sydney, Australia"
-      ].filter(city => city.toLowerCase().includes(query.toLowerCase()));
-      setSearchSuggestions(mockSuggestions);
-      setShowSuggestions(true);
-    } else {
+    // Remove mock suggestions - allow direct search
+    setShowSuggestions(false);
+  };
+
+  const handleLocationSelect = (selectedLocation: string) => {
+    // This function is now for handling direct search
+    if (selectedLocation.trim()) {
+      fetchWeatherByLocation(selectedLocation.trim());
+      setSearchLocation("");
       setShowSuggestions(false);
     }
   };
 
-  const handleLocationSelect = (selectedLocation: string) => {
-    const locationName = selectedLocation.split(',')[0];
-    fetchWeatherByLocation(locationName);
-    setSearchLocation("");
-    setShowSuggestions(false);
+  const handleSearchSubmit = () => {
+    if (searchLocation.trim()) {
+      fetchWeatherByLocation(searchLocation.trim());
+      setSearchLocation("");
+      setShowSuggestions(false);
+    }
   };
 
   const handleCurrentLocationClick = async () => {
@@ -120,8 +118,8 @@ const Index = () => {
       onLocationSearch={handleLocationSearch}
       onLocationSelect={handleLocationSelect}
       onCurrentLocationClick={handleCurrentLocationClick}
-      searchSuggestions={searchSuggestions}
-      showSuggestions={showSuggestions}
+      searchSuggestions={[]}
+      showSuggestions={false}
       setShowSuggestions={setShowSuggestions}
       currentTime={currentTime}
     >
