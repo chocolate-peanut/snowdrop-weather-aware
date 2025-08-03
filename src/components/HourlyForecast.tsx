@@ -1,11 +1,11 @@
-import { Cloud, Sun, CloudRain, CloudSnow, Wind, Zap, CloudFog, Thermometer } from "lucide-react";
+import { Cloud, Sun, CloudRain } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface HourlyData {
   time: string;
   temperature: number;
-  condition: "sunny" | "rainy" | "cloudy" | "rain" | "snow" | "wind" | "thunderstorms" | "lightning" | "fog" | "extreme-heat";
+  condition: "sunny" | "rainy" | "cloudy";
   precipitation: number;
 }
 
@@ -17,13 +17,6 @@ const weatherIcons = {
   sunny: Sun,
   rainy: CloudRain,
   cloudy: Cloud,
-  rain: CloudRain,
-  snow: CloudSnow,
-  wind: Wind,
-  thunderstorms: Cloud,
-  lightning: Zap,
-  fog: CloudFog,
-  "extreme-heat": Thermometer,
 };
 
 export function HourlyForecast({ data }: HourlyForecastProps) {

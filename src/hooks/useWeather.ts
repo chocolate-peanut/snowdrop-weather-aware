@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 interface CurrentWeather {
   location: string;
   temperature: number;
-  condition: "sunny" | "rainy" | "cloudy" | "rain" | "snow" | "wind" | "thunderstorms" | "lightning" | "fog" | "extreme-heat";
+  condition: "sunny" | "rainy" | "cloudy";
   description: string;
   date: string;
   time: string;
@@ -13,13 +13,13 @@ interface CurrentWeather {
 interface HourlyData {
   time: string;
   temperature: number;
-  condition: "sunny" | "rainy" | "cloudy" | "rain" | "snow" | "wind" | "thunderstorms" | "lightning" | "fog" | "extreme-heat";
+  condition: "sunny" | "rainy" | "cloudy";
   precipitation: number;
 }
 
 interface DailyData {
   day: string;
-  condition: "sunny" | "rainy" | "cloudy" | "rain" | "snow" | "wind" | "thunderstorms" | "lightning" | "fog" | "extreme-heat";
+  condition: "sunny" | "rainy" | "cloudy";
   high: number;
   low: number;
   precipitation: number;
