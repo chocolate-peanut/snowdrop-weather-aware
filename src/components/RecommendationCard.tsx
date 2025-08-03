@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Book, Film, Music, Star } from 'lucide-react';
+import { Book, Film, Music, Star, ExternalLink } from 'lucide-react';
 
 interface Recommendation {
   title: string;
@@ -30,6 +30,25 @@ const getTitle = (type: 'book' | 'movie' | 'music') => {
     case 'movie': return 'Movie Recommendations';
     case 'music': return 'Music Recommendations';
   }
+};
+
+const getExternalLink = (type: 'book' | 'movie' | 'music', title: string) => {
+  const encodedTitle = encodeURIComponent(title);
+  switch (type) {
+    case 'book': return `https://www.goodreads.com/search?q=${encodedTitle}`;
+    case 'movie': return `https://www.imdb.com/find?q=${encodedTitle}`;
+    case 'music': return `https://open.spotify.com/search/${encodedTitle}`;
+  }
+};
+
+// Shuffle array function for fresh recommendations
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
 };
 
 // Mock recommendations - in a real app, these would come from an API
@@ -108,16 +127,24 @@ const mockRecommendations: Record<string, Recommendation[]> = {
 export const RecommendationCard = ({ type, userPreferences }: RecommendationCardProps) => {
   const allRecommendations = mockRecommendations[type] || [];
   
+  // Shuffle recommendations for fresh content on each render
+  const shuffledRecommendations = shuffleArray(allRecommendations);
+  
   // Filter recommendations based on user preferences
   const filteredRecommendations = userPreferences.length > 0 
-    ? allRecommendations.filter(rec => 
+    ? shuffledRecommendations.filter(rec => 
         userPreferences.some(pref => 
           rec.genre.toLowerCase().includes(pref.toLowerCase())
         )
       )
-    : allRecommendations.slice(0, 2); // Show 2 random recommendations if no preferences
+    : shuffledRecommendations.slice(0, 2); // Show 2 random recommendations if no preferences
 
   const recommendations = filteredRecommendations.slice(0, 3);
+
+  const handleRecommendationClick = (rec: Recommendation) => {
+    const externalLink = getExternalLink(type, rec.title);
+    window.open(externalLink, '_blank', 'noopener,noreferrer');
+  };
 
   if (recommendations.length === 0) {
     return (
@@ -147,10 +174,19 @@ export const RecommendationCard = ({ type, userPreferences }: RecommendationCard
       </CardHeader>
       <CardContent className="space-y-4">
         {recommendations.map((rec, index) => (
-          <div key={index} className="border-l-2 border-primary/20 pl-4">
+          <div 
+            key={index} 
+            className="border-l-2 border-primary/20 pl-4 cursor-pointer transition-all duration-200 hover:border-primary/40 hover:bg-muted/30 rounded-r-md -mr-2 pr-2 py-2 group"
+            onClick={() => handleRecommendationClick(rec)}
+          >
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <h4 className="font-semibold text-card-foreground">{rec.title}</h4>
+                <div className="flex items-center gap-2">
+                  <h4 className="font-semibold text-card-foreground group-hover:text-primary transition-colors">
+                    {rec.title}
+                  </h4>
+                  <ExternalLink className="w-3 h-3 text-muted-foreground group-hover:text-primary transition-colors opacity-0 group-hover:opacity-100" />
+                </div>
                 <div className="flex items-center gap-2 mt-1">
                   <Badge variant="secondary" className="text-xs">
                     {rec.genre}
