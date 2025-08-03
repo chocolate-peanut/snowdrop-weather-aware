@@ -1,13 +1,20 @@
-import { Cloud, Sun, CloudRain, MapPin, Calendar } from "lucide-react";
+import { Cloud, Sun, CloudRain, CloudSnow, Wind, Zap, CloudFog, Thermometer, MapPin, Calendar } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import sunnyWeather from "@/assets/weather-sunny.jpg";
 import rainyWeather from "@/assets/weather-rainy.jpg";
 import cloudyWeather from "@/assets/weather-cloudy.jpg";
+import rainWeather from "@/assets/weather-rain.jpg";
+import snowWeather from "@/assets/weather-snow.jpg";
+import windWeather from "@/assets/weather-wind.jpg";
+import thunderstormsWeather from "@/assets/weather-thunderstorms.jpg";
+import lightningWeather from "@/assets/weather-lightning.jpg";
+import fogWeather from "@/assets/weather-fog.jpg";
+import extremeHeatWeather from "@/assets/weather-extreme-heat.jpg";
 
 interface WeatherCardProps {
   location: string;
   temperature: number;
-  condition: "sunny" | "rainy" | "cloudy";
+  condition: "sunny" | "rainy" | "cloudy" | "rain" | "snow" | "wind" | "thunderstorms" | "lightning" | "fog" | "extreme-heat";
   date: string;
   description: string;
 }
@@ -16,12 +23,26 @@ const weatherImages = {
   sunny: sunnyWeather,
   rainy: rainyWeather,
   cloudy: cloudyWeather,
+  rain: rainWeather,
+  snow: snowWeather,
+  wind: windWeather,
+  thunderstorms: thunderstormsWeather,
+  lightning: lightningWeather,
+  fog: fogWeather,
+  "extreme-heat": extremeHeatWeather,
 };
 
 const weatherIcons = {
   sunny: Sun,
   rainy: CloudRain,
   cloudy: Cloud,
+  rain: CloudRain,
+  snow: CloudSnow,
+  wind: Wind,
+  thunderstorms: Cloud,
+  lightning: Zap,
+  fog: CloudFog,
+  "extreme-heat": Thermometer,
 };
 
 export function WeatherCard({ location, temperature, condition, date, description }: WeatherCardProps) {

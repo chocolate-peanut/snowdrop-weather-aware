@@ -1,9 +1,9 @@
-import { Cloud, Sun, CloudRain } from "lucide-react";
+import { Cloud, Sun, CloudRain, CloudSnow, Wind, Zap, CloudFog, Thermometer } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 interface DailyData {
   day: string;
-  condition: "sunny" | "rainy" | "cloudy";
+  condition: "sunny" | "rainy" | "cloudy" | "rain" | "snow" | "wind" | "thunderstorms" | "lightning" | "fog" | "extreme-heat";
   high: number;
   low: number;
   precipitation: number;
@@ -17,6 +17,13 @@ const weatherIcons = {
   sunny: Sun,
   rainy: CloudRain,
   cloudy: Cloud,
+  rain: CloudRain,
+  snow: CloudSnow,
+  wind: Wind,
+  thunderstorms: Cloud,
+  lightning: Zap,
+  fog: CloudFog,
+  "extreme-heat": Thermometer,
 };
 
 export function WeeklyForecast({ data }: WeeklyForecastProps) {

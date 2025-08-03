@@ -215,20 +215,6 @@ const Index = () => {
           </>
         )}
 
-        {/* Location Detection Prompt */}
-        <div className="text-center py-8">
-          <Button 
-            onClick={handleCurrentLocationClick}
-            disabled={loading}
-            className="glass-card border-0 bg-primary/90 hover:bg-primary text-primary-foreground"
-          >
-            <MapPin className="w-4 h-4 mr-2" />
-            Use Current Location
-          </Button>
-          <p className="text-xs text-muted-foreground mt-2">
-            Enable location access for personalized weather alerts
-          </p>
-        </div>
       </div>
     </Layout>
   );
