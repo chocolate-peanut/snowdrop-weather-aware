@@ -30,9 +30,15 @@ const Index = () => {
     clearError 
   } = useWeather();
 
-  // Load weather for default location on mount
+  // Load weather on mount - check for saved location first
   useEffect(() => {
-    fetchWeatherByLocation("New York");
+    const savedLocation = localStorage.getItem('weather-location');
+    if (savedLocation) {
+      fetchWeatherByLocation(savedLocation);
+    } else {
+      // No saved location, try to get current location
+      fetchCurrentLocationWeather();
+    }
   }, []);
 
   // Show error messages as toasts
@@ -83,7 +89,9 @@ const Index = () => {
   const handleLocationSelect = (selectedLocation: string) => {
     // This function is now for handling direct search
     if (selectedLocation.trim()) {
-      fetchWeatherByLocation(selectedLocation.trim());
+      const location = selectedLocation.trim();
+      fetchWeatherByLocation(location);
+      localStorage.setItem('weather-location', location);
       setSearchLocation("");
       setShowSuggestions(false);
     }
@@ -91,7 +99,9 @@ const Index = () => {
 
   const handleSearchSubmit = () => {
     if (searchLocation.trim()) {
-      fetchWeatherByLocation(searchLocation.trim());
+      const location = searchLocation.trim();
+      fetchWeatherByLocation(location);
+      localStorage.setItem('weather-location', location);
       setSearchLocation("");
       setShowSuggestions(false);
     }
@@ -100,6 +110,8 @@ const Index = () => {
   const handleCurrentLocationClick = async () => {
     try {
       await fetchCurrentLocationWeather();
+      // Clear saved location when using current location
+      localStorage.removeItem('weather-location');
       toast({
         title: "Location Updated",
         description: "Weather data updated for your current location",
