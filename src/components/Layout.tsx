@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Home, Calendar as CalendarIcon, FileText, Settings as SettingsIcon, Search, MapPin } from 'lucide-react';
+import { Home, FileText, Settings as SettingsIcon, Search, MapPin } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Calendar } from '@/pages/Calendar';
 import { Planner } from '@/pages/Planner';
 import { Settings } from '@/pages/Settings';
 
@@ -56,9 +55,6 @@ export const Layout = ({
     if (activeTab === 'settings' || showSettings) {
       return <Settings />;
     }
-    if (activeTab === 'calendar') {
-      return <Calendar />;
-    }
     if (activeTab === 'planner') {
       return <Planner />;
     }
@@ -80,14 +76,17 @@ export const Layout = ({
               )}
             </div>
             <div className="flex items-center gap-2">
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={handleSettingsClick}
-                className={activeTab === 'settings' ? 'text-primary bg-primary/10' : ''}
-              >
-                <SettingsIcon className="w-4 h-4" />
-              </Button>
+              {onCurrentLocationClick && (
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={onCurrentLocationClick}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <MapPin className="w-4 h-4" />
+                  <span className="text-xs ml-1">Enable Location</span>
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -155,18 +154,6 @@ export const Layout = ({
             </button>
             <button
               onClick={() => {
-                setActiveTab("calendar");
-                setShowSettings(false);
-              }}
-              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors ${
-                activeTab === "calendar" ? "text-primary bg-primary/10" : "text-muted-foreground"
-              }`}
-            >
-              <CalendarIcon className="w-5 h-5" />
-              <span className="text-xs font-medium">Calendar</span>
-            </button>
-            <button
-              onClick={() => {
                 setActiveTab("planner");
                 setShowSettings(false);
               }}
@@ -176,6 +163,18 @@ export const Layout = ({
             >
               <FileText className="w-5 h-5" />
               <span className="text-xs font-medium">Planner</span>
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab("settings");
+                setShowSettings(true);
+              }}
+              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors ${
+                activeTab === "settings" ? "text-primary bg-primary/10" : "text-muted-foreground"
+              }`}
+            >
+              <SettingsIcon className="w-5 h-5" />
+              <span className="text-xs font-medium">Settings</span>
             </button>
           </div>
         </div>
