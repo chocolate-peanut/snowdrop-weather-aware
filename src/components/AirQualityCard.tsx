@@ -1,6 +1,7 @@
 import { Wind, AlertTriangle, CheckCircle, AlertCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface AirQualityCardProps {
   aqi: number;
@@ -58,16 +59,54 @@ export function AirQualityCard({ aqi, location, pm25, pm10 }: AirQualityCardProp
           <p className="text-sm text-muted-foreground">{status.description}</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border/50">
-          <div className="text-center">
-            <p className="text-xs text-muted-foreground mb-1">PM2.5</p>
-            <p className="text-sm font-semibold text-card-foreground">{pm25} μg/m³</p>
+        <TooltipProvider>
+          <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border/50">
+            <div className="text-center">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="cursor-help">
+                    <p className="text-xs text-muted-foreground mb-1">PM2.5</p>
+                    <p className="text-sm font-semibold text-card-foreground">{pm25} μg/m³</p>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <div className="max-w-xs">
+                    <p className="font-medium mb-1">Fine Particulate Matter (PM2.5)</p>
+                    <p className="text-xs">Particles smaller than 2.5 micrometers. Can penetrate deep into lungs and bloodstream.</p>
+                    <p className="text-xs mt-1">
+                      <span className="font-medium">WHO Guidelines:</span><br/>
+                      • Good: 0-10 μg/m³<br/>
+                      • Moderate: 10-25 μg/m³<br/>
+                      • Poor: {'>'}25 μg/m³
+                    </p>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+            <div className="text-center">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="cursor-help">
+                    <p className="text-xs text-muted-foreground mb-1">PM10</p>
+                    <p className="text-sm font-semibold text-card-foreground">{pm10} μg/m³</p>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <div className="max-w-xs">
+                    <p className="font-medium mb-1">Coarse Particulate Matter (PM10)</p>
+                    <p className="text-xs">Particles smaller than 10 micrometers. Can irritate eyes, nose, and throat.</p>
+                    <p className="text-xs mt-1">
+                      <span className="font-medium">WHO Guidelines:</span><br/>
+                      • Good: 0-20 μg/m³<br/>
+                      • Moderate: 20-50 μg/m³<br/>
+                      • Poor: {'>'}50 μg/m³
+                    </p>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </div>
           </div>
-          <div className="text-center">
-            <p className="text-xs text-muted-foreground mb-1">PM10</p>
-            <p className="text-sm font-semibold text-card-foreground">{pm10} μg/m³</p>
-          </div>
-        </div>
+        </TooltipProvider>
       </div>
     </Card>
   );

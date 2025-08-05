@@ -5,6 +5,7 @@ import { UVIndexCard } from "@/components/UVIndexCard";
 import { HourlyForecast } from "@/components/HourlyForecast";
 import { WeeklyForecast } from "@/components/WeeklyForecast";
 import { NotificationBanner } from "@/components/NotificationBanner";
+import { mapAlertToNotificationType } from "@/utils/alertTypeMapper";
 import { Layout } from "@/components/Layout";
 import { useWeather } from "@/hooks/useWeather";
 import { Button } from "@/components/ui/button";
@@ -157,28 +158,37 @@ const Index = () => {
           <>
             {/* Smart Notifications */}
             <div className="space-y-3">
-              {weatherData.alerts.map((alert, index) => (
-                <NotificationBanner 
-                  key={index}
-                  type="general" 
-                  message={alert.headline}
-                />
-              ))}
+              {weatherData.alerts.map((alert, index) => {
+                const { type, severity } = mapAlertToNotificationType(alert.headline, alert.severity);
+                return (
+                  <NotificationBanner 
+                    key={index}
+                    type={type}
+                    severity={severity}
+                    message={alert.headline}
+                    playSound={severity === "extreme" || severity === "severe"}
+                  />
+                );
+              })}
               {weatherData.hourly.some(h => h.precipitation > 50) && (
                 <NotificationBanner 
                   type="rain" 
+                  severity="moderate"
                   message="Rain expected in the next few hours. Don't forget your umbrella!" 
+                  playSound={true}
                 />
               )}
               {weatherData.uvIndex.current > 6 && (
                 <NotificationBanner 
                   type="uv" 
+                  severity="moderate"
                   message="High UV index today. Consider wearing sunscreen and a hat."
                 />
               )}
               {weatherData.airQuality.aqi > 100 && (
                 <NotificationBanner 
                   type="air" 
+                  severity="moderate"
                   message="Air quality is unhealthy. Consider limiting outdoor activities."
                 />
               )}
