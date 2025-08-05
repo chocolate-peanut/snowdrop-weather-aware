@@ -1,47 +1,84 @@
-import { useSettings } from '@/hooks/useSettings';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { PreferenceSelector } from '@/components/PreferenceSelector';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { Settings as SettingsIcon, Palette, Bell, MapPin, BookOpen, Film, Music } from 'lucide-react';
-import { useTheme } from 'next-themes';
+import { useSettings } from "@/hooks/useSettings";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { PreferenceSelector } from "@/components/PreferenceSelector";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import {
+  Settings as SettingsIcon,
+  Palette,
+  Bell,
+  MapPin,
+  BookOpen,
+  Film,
+  Music,
+} from "lucide-react";
+import { useTheme } from "next-themes";
 
 export const Settings = () => {
   const { settings, updateSettings, updatePreferences } = useSettings();
   const { theme, setTheme } = useTheme();
 
   const bookSuggestions = [
-    'Fiction', 'Non-Fiction', 'Mystery', 'Romance', 'Science Fiction', 
-    'Fantasy', 'Biography', 'History', 'Self-Help', 'Thriller'
+    "Fiction",
+    "Non-Fiction",
+    "Mystery",
+    "Romance",
+    "Science Fiction",
+    "Fantasy",
+    "Biography",
+    "History",
+    "Self-Help",
+    "Thriller",
   ];
 
   const movieSuggestions = [
-    'Action', 'Comedy', 'Drama', 'Horror', 'Science Fiction', 
-    'Romance', 'Thriller', 'Documentary', 'Animation', 'Adventure'
+    "Action",
+    "Comedy",
+    "Drama",
+    "Horror",
+    "Science Fiction",
+    "Romance",
+    "Thriller",
+    "Documentary",
+    "Animation",
+    "Adventure",
   ];
 
   const musicSuggestions = [
-    'Pop', 'Rock', 'Hip Hop', 'Jazz', 'Classical', 
-    'Electronic', 'Country', 'R&B', 'Indie', 'Folk'
+    "Pop",
+    "Rock",
+    "Hip Hop",
+    "Jazz",
+    "Classical",
+    "Electronic",
+    "Country",
+    "R&B",
+    "Indie",
+    "Folk",
   ];
 
   return (
-    <div className="container mx-auto px-4 py-6 space-y-6">
-      <div className="flex items-center gap-2">
+    <div className="container mx-auto px-4 pb-6 space-y-6">
+      <div className="flex items-center gap-2 px-2">
         <SettingsIcon className="w-6 h-6" />
-        <h1 className="text-2xl font-bold text-foreground">Settings</h1>
+        <h1 className="text-xl font-semibold text-foreground">Settings</h1>
       </div>
 
       {/* Theme Settings */}
       <Card className="glass-card border-0">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Palette className="w-5 h-5" />
+          <h2 className="text-lg font-semibold text-foreground">
             Theme Settings
-          </CardTitle>
+          </h2>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -49,7 +86,7 @@ export const Settings = () => {
               <Label htmlFor="theme-select">Theme</Label>
               <Select
                 value={theme}
-                onValueChange={(value: 'light' | 'dark' | 'system') => {
+                onValueChange={(value: "light" | "dark" | "system") => {
                   setTheme(value);
                   updateSettings({ theme: value });
                 }}
@@ -74,7 +111,9 @@ export const Settings = () => {
       {/* App Settings */}
       <Card className="glass-card border-0">
         <CardHeader>
-          <CardTitle>App Settings</CardTitle>
+          <h2 className="text-lg font-semibold text-foreground">
+            App Settings
+          </h2>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Notifications */}
@@ -91,7 +130,9 @@ export const Settings = () => {
             <Switch
               id="notifications"
               checked={settings.notifications}
-              onCheckedChange={(checked) => updateSettings({ notifications: checked })}
+              onCheckedChange={(checked) =>
+                updateSettings({ notifications: checked })
+              }
             />
           </div>
 
@@ -111,7 +152,9 @@ export const Settings = () => {
             <Switch
               id="location"
               checked={settings.locationServices}
-              onCheckedChange={(checked) => updateSettings({ locationServices: checked })}
+              onCheckedChange={(checked) =>
+                updateSettings({ locationServices: checked })
+              }
             />
           </div>
         </CardContent>
@@ -119,33 +162,36 @@ export const Settings = () => {
 
       {/* Preferences */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 px-2">
           <BookOpen className="w-5 h-5" />
-          <h2 className="text-lg font-semibold text-foreground">Content Preferences</h2>
+          <h1 className="text-xl font-semibold text-foreground">
+            Content Preferences
+          </h1>
         </div>
-        <p className="text-sm text-muted-foreground">
-          Set your preferences to get personalized recommendations for indoor activities
+        <p className="text-sm text-muted-foreground px-2">
+          Set your preferences to get personalized recommendations for indoor
+          activities
         </p>
 
         <PreferenceSelector
           title="Book Preferences"
           preferences={settings.preferences.books}
           suggestions={bookSuggestions}
-          onChange={(preferences) => updatePreferences('books', preferences)}
+          onChange={(preferences) => updatePreferences("books", preferences)}
         />
 
         <PreferenceSelector
           title="Movie Preferences"
           preferences={settings.preferences.movies}
           suggestions={movieSuggestions}
-          onChange={(preferences) => updatePreferences('movies', preferences)}
+          onChange={(preferences) => updatePreferences("movies", preferences)}
         />
 
         <PreferenceSelector
           title="Music Preferences"
           preferences={settings.preferences.music}
           suggestions={musicSuggestions}
-          onChange={(preferences) => updatePreferences('music', preferences)}
+          onChange={(preferences) => updatePreferences("music", preferences)}
         />
       </div>
     </div>
