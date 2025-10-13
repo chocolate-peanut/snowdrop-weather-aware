@@ -12,6 +12,7 @@ import {
 import { PreferenceSelector } from "@/components/PreferenceSelector";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
 import {
   Settings as SettingsIcon,
   Palette,
@@ -20,12 +21,22 @@ import {
   BookOpen,
   Film,
   Music,
+  Wifi,
 } from "lucide-react";
 import { useTheme } from "next-themes";
+import { LocationContextIndicator } from "@/components/LocationContextIndicator";
+import { useState } from "react";
 
 export const Settings = () => {
   const { settings, updateSettings, updatePreferences } = useSettings();
   const { theme, setTheme } = useTheme();
+  const [homeWifiSSID, setHomeWifiSSID] = useState(
+    localStorage.getItem('homeWifiSSID') || ''
+  );
+
+  const handleSaveWifiSSID = () => {
+    localStorage.setItem('homeWifiSSID', homeWifiSSID);
+  };
 
   const bookSuggestions = [
     "Fiction",
@@ -157,8 +168,39 @@ export const Settings = () => {
               }
             />
           </div>
+
+          <Separator />
+
+          {/* Home WiFi Configuration */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <Wifi className="w-5 h-5 text-muted-foreground" />
+              <div className="flex-1">
+                <Label htmlFor="homeWifi">Home WiFi Network (Optional)</Label>
+                <p className="text-sm text-muted-foreground">
+                  Set your home WiFi to improve indoor/outdoor detection
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Input
+                id="homeWifi"
+                type="text"
+                placeholder="Enter your home WiFi SSID"
+                value={homeWifiSSID}
+                onChange={(e) => setHomeWifiSSID(e.target.value)}
+                className="flex-1"
+              />
+              <Button onClick={handleSaveWifiSSID} variant="secondary">
+                Save
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
+
+      {/* Location Context Detection */}
+      <LocationContextIndicator homeWifiSSID={homeWifiSSID || undefined} />
 
       {/* Preferences */}
       <div className="space-y-4">

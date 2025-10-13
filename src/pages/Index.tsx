@@ -5,12 +5,14 @@ import { UVIndexCard } from "@/components/UVIndexCard";
 import { HourlyForecast } from "@/components/HourlyForecast";
 import { WeeklyForecast } from "@/components/WeeklyForecast";
 import { NotificationBanner } from "@/components/NotificationBanner";
+import { ContextualRecommendations } from "@/components/ContextualRecommendations";
 import { mapAlertToNotificationType } from "@/utils/alertTypeMapper";
 import { Layout } from "@/components/Layout";
 import { useWeather } from "@/hooks/useWeather";
 import { Button } from "@/components/ui/button";
 import { MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { LocationContext } from "@/hooks/useLocationContext";
 
 const Index = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -18,6 +20,7 @@ const Index = () => {
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeTab, setActiveTab] = useState("home");
+  const [locationContext, setLocationContext] = useState<LocationContext>('unknown');
   
   const { toast } = useToast();
   const { 
@@ -222,6 +225,15 @@ const Index = () => {
 
             {/* Weekly Forecast */}
             <WeeklyForecast data={weatherData.weekly} />
+
+            {/* Contextual Recommendations based on location context */}
+            {locationContext !== 'unknown' && (
+              <ContextualRecommendations
+                locationContext={locationContext}
+                weatherCondition={currentWeather.condition}
+                temperature={currentWeather.temperature}
+              />
+            )}
           </>
         )}
 
