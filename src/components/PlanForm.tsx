@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { CalendarIcon, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -40,15 +41,16 @@ export const PlanForm = ({ plan, onSave, onCancel }: PlanFormProps) => {
 
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md glass-card border-0">
-        <CardHeader className="flex flex-row items-center justify-between">
+      <Card className="w-full max-w-md max-h-[90vh] glass-card border-0 flex flex-col">
+        <CardHeader className="flex flex-row items-center justify-between flex-shrink-0">
           <CardTitle>{plan ? 'Edit Plan' : 'Add New Plan'}</CardTitle>
           <Button variant="ghost" size="sm" onClick={onCancel}>
             <X className="w-4 h-4" />
           </Button>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <ScrollArea className="flex-1 overflow-y-auto">
+          <CardContent className="pb-0">
+            <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="title">Title</Label>
               <Input
@@ -148,7 +150,7 @@ export const PlanForm = ({ plan, onSave, onCancel }: PlanFormProps) => {
               />
             </div>
 
-            <div className="flex gap-2 pt-4">
+            <div className="flex gap-2 pt-4 pb-6">
               <Button type="submit" className="flex-1">
                 {plan ? 'Update Plan' : 'Add Plan'}
               </Button>
@@ -157,7 +159,8 @@ export const PlanForm = ({ plan, onSave, onCancel }: PlanFormProps) => {
               </Button>
             </div>
           </form>
-        </CardContent>
+          </CardContent>
+        </ScrollArea>
       </Card>
     </div>
   );
